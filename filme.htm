@@ -1,0 +1,144 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Recomendação de Filmes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #film-info {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #film-info p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recomendação de Filmes</h1>
+        <button id="btn-filme" class="button">Quero assistir a um filme!</button>
+        <div id="film-info">
+            <h2 id="film-theme"></h2>
+            <p id="film-resumo"></p>
+            <p id="film-indicacao"></p>
+            <p id="film-sinopse"></p>
+            <p id="film-horario"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("btn-filme").addEventListener("click", function() {
+            // Dicionário de temas de filmes, resumos, indicações e sinopses correspondentes
+            var temas_resumos_indicacoes_sinopses = {
+                'Ação': {
+                    'resumo': 'Um filme cheio de emoção, com cenas de lutas e perseguições eletrizantes.',
+                    'indicacao': 'Indicação: "Vingadores: Ultimato"',
+                    'sinopse': 'Após os eventos devastadores de "Vingadores: Guerra Infinita", os super-heróis se reúnem para desfazer as ações de Thanos e restaurar a ordem no universo.',
+                    'horario_ideal': 'Horário ideal: À noite'
+                },
+                'Comédia': {
+                    'resumo': 'Uma história engraçada que vai te fazer rir do início ao fim.',
+                    'indicacao': 'Indicação: "Se Beber, Não Case!"',
+                    'sinopse': 'Quatro amigos vão para Las Vegas para celebrar uma despedida de solteiro, mas acabam acordando no dia seguinte sem lembrar de nada e com um tigre no banheiro.',
+                    'horario_ideal': 'Horário ideal: Fim de semana à tarde'
+                },
+                'Romance': {
+                    'resumo': 'Uma história de amor envolvente e emocionante que vai derreter seu coração.',
+                    'indicacao': 'Indicação: "Orgulho e Preconceito"',
+                    'sinopse': 'A trama se passa na Inglaterra do século XIX e acompanha a história de Elizabeth Bennet, uma mulher inteligente e determinada, que se envolve com o orgulhoso Sr. Darcy.',
+                    'horario_ideal': 'Horário ideal: Noite, para criar uma atmosfera romântica'
+                },
+                'Ficção Científica': {
+                    'resumo': 'Uma trama futurista com tecnologias incríveis e conceitos inovadores.',
+                    'indicacao': 'Indicação: "Blade Runner 2049"',
+                    'sinopse': 'No ano de 2049, um novo blade runner, K, descobre um segredo enterrado há muito tempo que tem o potencial de mergulhar o que resta da sociedade no caos.',
+                    'horario_ideal': 'Horário ideal: À noite, para aproveitar a atmosfera sombria'
+                },
+                'Suspense': {
+                    'resumo': 'Um filme cheio de mistério e reviravoltas que vão te prender até o último segundo.',
+                    'indicacao': 'Indicação: "O Sexto Sentido"',
+                    'sinopse': 'Um psicólogo infantil tenta ajudar um garoto de 8 anos que diz ver pessoas mortas, mas acaba descobrindo uma verdade assustadora sobre si mesmo.',
+                    'horario_ideal': 'Horário ideal: Noite, para criar suspense'
+                },
+                'Animação': {
+                    'resumo': 'Uma animação encantadora com personagens cativantes e uma aventura divertida.',
+                    'indicacao': 'Indicação: "Toy Story"',
+                    'sinopse': 'Woody, um brinquedo cowboy, é o favorito de seu dono, Andy. Mas quando Buzz Lightyear, um brinquedo espacial, chega, a amizade de Woody é colocada à prova.',
+                    'horario_ideal': 'Horário ideal: Para toda a família, à tarde ou à noite'
+                },
+                'Aventura': {
+                    'resumo': 'Uma jornada cheia de desafios e descobertas emocionantes.',
+                    'indicacao': 'Indicação: "Indiana Jones e Os Caçadores da Arca Perdida"',
+                    'sinopse': 'O arqueólogo Indiana Jones é contratado pelo governo dos EUA para encontrar a mística Arca da Aliança antes que os nazistas a usem para conquistar o mundo.',
+                    'horario_ideal': 'Horário ideal: Fim de semana à tarde'
+                },
+                'Drama': {
+                    'resumo': 'Uma história profunda e emocional que vai te fazer refletir sobre a vida.',
+                    'indicacao': 'Indicação: "Clube da Luta"',
+                    'sinopse': 'Um homem comum insatisfeito com sua vida monótona e sem propósito forma um clube de luta subterrâneo, que acaba se tornando uma revolução violenta.',
+                    'horario_ideal': 'Horário ideal: Noite, para absorver melhor as reflexões'
+                },
+                'Fantasia': {
+                    'resumo': 'Um mundo mágico cheio de criaturas fantásticas e aventuras épicas.',
+                    'indicacao': 'Indicação: "O Senhor dos Anéis: A Sociedade do Anel"',
+                    'sinopse': 'Um hobbit chamado Frodo é encarregado de destruir um poderoso anel antes que caia nas mãos do mal, embarcando em uma jornada perigosa para salvar a Terra-média.',
+                    'horario_ideal': 'Horário ideal: Fim de semana à tarde'
+                },
+                'Procurando Nemo': {
+                    'resumo': 'Uma emocionante história sobre um peixe-palhaço chamado Marlin, que embarca em uma jornada pelo oceano para encontrar seu filho Nemo, que foi capturado por um mergulhador.',
+                    'indicacao': 'Indicação: "Procurando Nemo"',
+                    'sinopse': 'Marlin, um peixe-palhaço superprotetor, embarca em uma jornada pelo oceano em busca de seu filho Nemo, que foi capturado por um mergulhador e levado para um aquário.',
+                    'horario_ideal': 'Horário ideal: Para toda a família, à tarde ou à noite'
+                }
+            };
+
+            // Seleciona um tema aleatório
+            var temas = Object.keys(temas_resumos_indicacoes_sinopses);
+            var tema_filme = temas[Math.floor(Math.random() * temas.length)];
+
+            // Obtém as informações correspondentes ao tema do filme selecionado aleatoriamente
+            var resumo_filme = temas_resumos_indicacoes_sinopses[tema_filme]['resumo'];
+            var indicacao_filme = temas_resumos_indicacoes_sinopses[tema_filme]['indicacao'];
+            var sinopse_filme = temas_resumos_indicacoes_sinopses[tema_filme]['sinopse'];
+            var horario_ideal_filme = temas_resumos_indicacoes_sinopses[tema_filme]['horario_ideal'];
+
+            // Atualiza os elementos na página com as informações do filme selecionado
+            document.getElementById("film-theme").textContent = "Tema do filme: " + tema_filme;
+            document.getElementById("film-resumo").textContent = "Resumo: " + resumo_filme;
+            document.getElementById("film-indicacao").textContent = indicacao_filme;
+            document.getElementById("film-sinopse").textContent = "Sinopse: " + sinopse_filme;
+            document.getElementById("film-horario").textContent = horario_ideal_filme;
+
+            // Exibe as informações do filme
+            document.getElementById("film-info").style.display = "block";
+        });
+    </script>
+</body>
+</html>
